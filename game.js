@@ -10,6 +10,11 @@ var mainMenu = {
         game.load.image('start', 'imgs/start.jpg');
     },
     create: function() {
+        
+        game.scale.fullScreenScaleMode = Phaser.ScaleManager.SHOW_ALL;
+        game.scale.scaleMode = Phaser.ScaleManager.SHOW_ALL;
+        game.scale.refresh();
+        
         //backgrounds
         this.bgSky = game.add.sprite(0,0, 'sky');
         this.bgSky.scale.x = 0.8; this.bgSky.scale.y = 0.8;
@@ -65,6 +70,9 @@ var mainState = {
     },
     create: function () {
         game.physics.startSystem(Phaser.Physics.ARCADE);
+        game.scale.fullScreenScaleMode = Phaser.ScaleManager.SHOW_ALL;
+        game.scale.scaleMode = Phaser.ScaleManager.SHOW_ALL;
+        game.scale.refresh();
         //backgrounds
         this.bgSky = game.add.sprite(0,0, 'sky');
         
@@ -104,7 +112,6 @@ var mainState = {
         this.sellButton = game.add.button(this.bar.position.x + this.bar.width /2, this.bar.position.y +0.1,'sell', this.sellOnClick, this);
         this.sellButton.scale.x = 0.17; this.sellButton.scale.y = 0.17;
         this.sellButton.visible = false;
-
                 
     },
     
@@ -176,4 +183,4 @@ game = new Phaser.Game(640, 480, Phaser.AUTO, 'gameDiv');
 // And finally we tell Phaser to add and start our 'main' state
 game.state.add('main', mainState);
 game.state.add('mainMenu', mainMenu);
-game.state.start('main');
+game.state.start('mainMenu');
