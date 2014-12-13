@@ -2,16 +2,16 @@
 /*jslint sloppy:true, browser: true, devel: true, eqeq: true, vars: true, white: true*/
 var game;
 var time = 0;
-var money = 1000000;
+var money = 500;
 var llamaCount = 0;
-var grassSupply = 0;
+var grassSupply = 5;
 var highScore = 0;
 var mainMenu = {
     preload: function() {
         game.load.image('ferrisWheel', 'imgs/ferrisWheel.png');
         game.load.image('sky', 'imgs/skyBackground.png');
         game.load.image('cloud', 'imgs/cloud.png');
-        game.load.image('start', 'imgs/start.jpg');
+        game.load.image('start', 'imgs/llama.png');
     },
     create: function() {
         
@@ -34,13 +34,16 @@ var mainMenu = {
         game.time.events.loop(1000, this.addCloud, this);
         
         //start button
-        this.start = game.add.button(0,0, 'start', this.start, this);
+        this.start = game.add.button(game.world.width/2 - this.start.width/2,game.world.height - this.start.height, 'start', this.start, this);
         this.start.x = game.world.width/2 - this.start.width/2;
         this.start.y = game.world.height - this.start.height;
         
+        
         //fonts or text
-        var title = "Llama Empire";
-        var style = {font: "28px Arial", fill: "#ff0044", align: "center"};
+        this.title = game.add.text(0, 80, 'Llama Empire', { font: "60px Arial", fill: "black" });
+        this.title.x = game.world.width/2 - this.title.width/2;
+        this.clickToStart = game.add.text(0,150, 'Click this cute llama to start!', { font: "18px Arial", fill: "black" });
+        this.clickToStart.x = game.world.width/2 - this.clickToStart.width/2;
 
     },
     update: function() {
@@ -65,27 +68,27 @@ var mainState = {
     preload: function () {
         game.load.image('sky', 'imgs/skyBackground.png');
         game.load.image('hfence', 'imgs/horizontalFence.png');
-        game.load.image('llama' , 'imgs/placeholder.png');
+        game.load.image('llama' , 'imgs/llama.png');
         game.load.image('bar', 'imgs/bar.png');
         game.load.image('buy', 'imgs/buyButton.png');
         game.load.image('sell', 'imgs/sellButton.png');
-        game.load.image('llamas', 'imgs/placeholder_mini.png');
+        game.load.image('llamas', 'imgs/llama_mini.png');
         game.load.image('vFence', 'imgs/verticalFence.png');
         game.load.image('feedAlert', 'imgs/feedAlert.png');
         game.load.image('grass', 'imgs/grass.png');
         game.load.image('feed', 'imgs/feedButton.png');
         game.load.image('all', 'imgs/all.png');
         game.load.image('mg', 'imgs/mgButton.png');
+        game.load.image('back', 'imgs/backButton.png');
     },
     create: function () {
         game.physics.startSystem(Phaser.Physics.ARCADE);
-<<<<<<< HEAD
         game.scale.fullScreenScaleMode = Phaser.ScaleManager.SHOW_ALL;
         game.scale.scaleMode = Phaser.ScaleManager.SHOW_ALL;
         game.scale.refresh();
-=======
         
->>>>>>> Lin
+        
+
         //backgrounds
         this.bgSky = game.add.sprite(0,0, 'sky');
         
@@ -104,6 +107,7 @@ var mainState = {
         //llama stuff
         //TODO: MAKE SPRITE CLASS AND MAKE IT RESEMBLE BUTTONS CLASS
         this.llama = game.add.button(0, this.hFence.position.y -10, 'llama', this.llamaOnClick, this);
+        this.llama.scale.x = 0.7; this.llama.scale.y = 0.7;
         this.llamas = game.add.group(game, 'llamas','llamas');
         this.llamas.enableBody = true;
         this.llamas.createMultiple(1000, 'llamas');
@@ -122,9 +126,7 @@ var mainState = {
         //sell button
         this.sellButton = game.add.button(this.buyButton.position.x+ this.buyButton.width + 5 , this.buyButton.position.y,'sell', this.sellOnClick, this);
         this.sellButton.visible = false;
-<<<<<<< HEAD
-                
-=======
+
         game.physics.arcade.enable(this.sellButton);
         
             
@@ -146,8 +148,8 @@ var mainState = {
         this.gBuyButton.visible = false;
         
         //text
-        this.llamaText = game.add.text(0,0,'Llamas: '+ llamaCount, this.textStyle);
-        this.moneyText = game.add.text(game.world.width/3 , 0, 'Money: $' + money,  this.textStyle);
+        this.llamaText = game.add.text(80,0,'Llamas: '+ llamaCount, this.textStyle);
+        this.moneyText = game.add.text(game.world.width/3+ 30 , 0, 'Money: $' + money,  this.textStyle);
         this.grassText = game.add.text(this.gBuyButton.position.x + this.gBuyButton.width + 10, this.gBuyButton.position.y, '' + grassSupply, this.textStyle);
         this.grassText.visible = false;
         //mini games button
@@ -160,9 +162,10 @@ var mainState = {
         for (var i = 0; i < llamaCount; i++) {
             this.addLlama();
         }
-
         
->>>>>>> Lin
+        //back button
+        this.back = game.add.button(0,0, 'back', function() {game.state.start('main')}, this);
+        this.back.scale.x = 0.3; this.back.scale.y = 0.3;
     },
     
     update: function () {
@@ -212,7 +215,7 @@ var mainState = {
         }
     },
     feedOnClick: function() {
-        if (grassSupply >= 1) {
+        if (grassSupply >= llamaCount) {
             this.llamas.forEachAlive(function(llama){
                 if (this.now - llama.lastFed > this.feedAlertTime){
                     grassSupply--;
@@ -279,9 +282,9 @@ var mainState = {
     },
     
     buyGrass: function() {
-        if (money >= 20) {
+        if (money >= 50) {
             grassSupply++;
-            money -= 20;
+            money -= 50;
         }
     },
     
@@ -317,7 +320,7 @@ var mgSelection = {
 var flappyLlama = {
     preload: function() {
         game.load.image('bg', 'imgs/flappyBirdBackground.png');
-        game.load.image('llama', 'imgs/placeholder_mini.png');
+        game.load.image('llama', 'imgs/llama_mini.png');
         game.load.image('pipe', 'imgs/pipe.png');
         game.load.image('pipe2', 'imgs/pipe2.png');
         game.load.image('board', 'imgs/board.png');
@@ -326,6 +329,9 @@ var flappyLlama = {
     },
     create: function() {
         game.physics.startSystem(Phaser.Physics.ARCADE);
+        game.scale.fullScreenScaleMode = Phaser.ScaleManager.SHOW_ALL;
+        game.scale.scaleMode = Phaser.ScaleManager.SHOW_ALL;
+        game.scale.refresh();
         this.gameOverhuh = false;
         
         //bg
@@ -380,6 +386,7 @@ var flappyLlama = {
     gameOver: function() {
         if (highScore<= this.score)
             highScore = this.score;
+        money += this.score;
         this.gameOverhuh = true;
         this.llama.body.velocity.y = 0;
         this.pipes.forEachAlive(function(pipeT){
@@ -391,8 +398,9 @@ var flappyLlama = {
         this.gameOverBoard = game.add.sprite(50, 50, 'board');
         this.back = game.add.button(60, 350, 'back', function() {game.state.start('mgSelection')}, this);
         this.replay = game.add.button(this.back.position.x + this.back.width + 5, this.back.position.y,'replay', this.restart, this);
-        this.scoreText2 = game.add.text(game.world.centerX - 200,game.world.centerY - 100, 'Score:' + Math.max(this.score, 0), { font: "60px Arial", fill: "black" });
-        this.highScoreText = game.add.text(game.world.centerX - 200,game.world.centerY , 'High score:' + highScore, { font: "60px Arial", fill: "black" });
+        this.money  = game.add.text(game.world.centerX - 200, game.world.centerY - 130, 'Money: +' + Math.max(this.score, 0),  { font: "60px Arial", fill: "black" });
+        this.scoreText2 = game.add.text(game.world.centerX - 200,game.world.centerY - 50, 'Score:' + Math.max(this.score, 0), { font: "60px Arial", fill: "black" });
+        this.highScoreText = game.add.text(game.world.centerX - 200,game.world.centerY + 30 , 'High score:' + highScore, { font: "60px Arial", fill: "black" });
     },
     
     restart: function() {
@@ -427,10 +435,7 @@ game = new Phaser.Game(640, 480, Phaser.AUTO, 'gameDiv');
 // And finally we tell Phaser to add and start our 'main' state
 game.state.add('main', mainState);
 game.state.add('mainMenu', mainMenu);
-<<<<<<< HEAD
-game.state.start('mainMenu');
-=======
 game.state.add('mgSelection', mgSelection);
 game.state.add('flappyLlama', flappyLlama);
-game.state.start('main');
->>>>>>> Lin
+game.state.start('mainMenu');
+
