@@ -42,7 +42,7 @@ var mainMenu = {
         //fonts or text
         this.title = game.add.text(0, 80, 'Llama Empire', { font: "60px Arial", fill: "black" });
         this.title.x = game.world.width/2 - this.title.width/2;
-        this.clickToStart = game.add.text(0,150, 'Click this cute llama to start!', { font: "18px Arial", fill: "black" });
+        this.clickToStart = game.add.text(0,150, 'Click this llama to start!', { font: "18px Arial", fill: "black" });
         this.clickToStart.x = game.world.width/2 - this.clickToStart.width/2;
 
     },
